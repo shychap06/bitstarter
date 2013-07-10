@@ -6,7 +6,7 @@ and basic DOM parsing.
 
 References:
 
- + cheerio
+77;10102;0c + cheerio
    - https://github.com/MatthewMueller/cheerio
    - http://encosia.com/cheerio-faster-windows-friendly-alternative-jsdom/
    - http://maxogden.com/scraping-with-node.html
@@ -24,8 +24,11 @@ References:
 var fs = require('fs');
 var program = require('commander');
 var cheerio = require('cheerio');
-var HTMLFILE_DEFAULT = "index.html";
+var HTMLFILE_DEFAULT = "";
 var CHECKSFILE_DEFAULT = "checks.json";
+var URL_DEFAULT = "";
+var URL_FILE = "tmp.html";
+var restler = require('restler');
 
 var assertFileExists = function(infile) {
     var instr = infile.toString();
@@ -36,8 +39,18 @@ var assertFileExists = function(infile) {
     return instr;
 };
 
+
+var getUrl = function(inUrl) {
+    var instr  = inUrl.toString();
+    return instr; 
+};
+
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
+};
+
+var cheerioHtmlString = function(htmlString) {
+    return cheerio.load(htmlString);
 };
 
 var loadChecks = function(checksfile) {
@@ -45,7 +58,7 @@ var loadChecks = function(checksfile) {
 };
 
 var checkHtmlFile = function(htmlfile, checksfile) {
-    $ = cheerioHtmlFile(htmlfile);
+    $ =  cheerioHtmlFile(htmlfile);
     var checks = loadChecks(checksfile).sort();
     var out = {};
     for(var ii in checks) {
@@ -54,6 +67,24 @@ var checkHtmlFile = function(htmlfile, checksfile) {
     }
     return out;
 };
+
+var checkHtmlUrl = function(url, checksfile) {
+    var resultStr = restler.get(url).on('complete', function(result) {
+	var string = result.toString();
+	$ = cheerioHtmlString(string);
+	var checks = loadChecks(checksfile).sort();
+	var out = {};
+	for(var ii in checks) {
+            var present = $(checks[ii]).length > 0;
+            out[checks[ii]] = present;
+	}
+	var outJson = JSON.stringify(out, null, 4);
+	console.log(outJson);
+	return out;
+    });
+    return resultStr;					
+};			
+
 
 var clone = function(fn) {
     // Workaround for commander.js issue.
@@ -65,10 +96,18 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-        .parse(process.argv);
-    var checkJson = checkHtmlFile(program.file, program.checks);
-    var outJson = JSON.stringify(checkJson, null, 4);
-    console.log(outJson);
+        .option('-u, --url <url_link>', 'Heroku url', clone(getUrl), URL_DEFAULT)
+      .parse(process.argv);
+    if (program.url != ""){
+	var checkJson = checkHtmlUrl(program.url, program.checks);       
+    }	
+    else {
+	var checkJson = checkHtmlFile(program.file, program.checks);
+	var outJson = JSON.stringify(checkJson, null, 4);
+	console.log(outJson);
+    }
+    
 } else {
     exports.checkHtmlFile = checkHtmlFile;
 }
+
