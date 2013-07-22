@@ -96,7 +96,65 @@
       }
       .footer a {
         color: #ccccff;
-      }
+     }
+    
+     /* Carousel stuff */
+			.carousel 
+			{
+				margin-bottom: 60px;
+			}
+
+			.carousel .container 
+			{
+				position: relative;
+				z-index: 9;
+			}
+
+			.carousel-control 
+			{
+				height: 80px;
+				margin-top: 0;
+				font-size: 120px;
+				text-shadow: 0 1px 1px rgba(0,0,0,.4);
+				background-color: transparent;
+				border: 0;
+				z-index: 10;
+			}
+
+			.carousel .item 
+			{
+				height: 500px;
+			}
+			.carousel img 
+			{
+				position: absolute;
+				top: 0;
+				left: 0;
+				min-width: 100%;
+				height: 500px;
+			}
+
+			.carousel-caption 
+			{
+				background-color: transparent;
+				position: static;
+				max-width: 550px;
+				padding: 0 10%;
+				margin-top: 150px;
+			}
+			.carousel-caption h1,
+			.carousel-caption .lead 
+			{
+				margin: 0;
+				line-height: 1.25;
+				color: #fefefe;
+				text-shadow: 0 1px 1px rgba(0,0,0,.4);
+			}
+			.carousel-caption .btn 
+			{
+				margin-top: 10px;
+			}
+
     </style>
   </head>
   <body>
@@ -124,6 +182,35 @@
     </div>
 
      <div class="container">
+       <div id="myCarousel" class="carousel slide">
+         <ol class="carousel-indicators">
+           <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+           <li data-target="#myCarousel" data-slide-to="1"></li>
+           <li data-target="#myCarousel" data-slide-to="2"></li>
+         </ol>
+         <!-- Carousel items -->
+         <div class="carousel-inner">
+           <div class="active item">
+	     <img src="slide01.jpg" alt="">
+	     <div class="container">
+		<div class="carousel-caption">
+	  	  <h1>Privacy first</h1>
+		  <p class="lead">
+		  Protect your right to privacy with
+		  proven technologies. Prevent others from prying
+		  into your conversations.
+		  </p>
+		 <a class="btn btn-large btn-primary" href="/signup">Sign up today</a>
+		</div>
+	     </div>
+	   </div>
+           <div class="item">…</div>
+           <div class="item">…</div>
+         </div>
+         <!-- Carousel nav -->
+         <a class="carousel-control left" href="#myCarousel" data-slide="prev">&lsaquo;</a>
+         <a class="carousel-control right" href="#myCarousel" data-slide="next">&rsaquo;</a>
+      </div>
       <!-- Font and paired font of .heading/.subheading and body from Google Fonts -->
       <!-- www.google.com/fonts/specimen/Ubuntu -->
       <!-- www.google.com/fonts/specimen/Ubuntu#pairings -->
